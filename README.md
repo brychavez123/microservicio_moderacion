@@ -74,6 +74,8 @@ Códigos de respuesta: `200`, `400` (validación), `401`, `403`, `404`, `409` (p
 3. `GET http://localhost:8083/api/moderacion/historial` muestra la acción registrada.
 4. En ms-foro, `GET http://localhost:8082/api/temas` ya no muestra ese tema.
 
+En AWS todo pasa por Nginx en el puerto 80: `http://IP/api/moderacion/...`
+
 ## Ejecutar
 ```bash
 # Local (con db.properties y el Wallet en la raíz)
@@ -87,4 +89,6 @@ docker run -p 8083:8083 --env-file db.properties -e DB_WALLET_PATH=/app/wallet \
 > Importante: la ruta del Wallet **no puede tener espacios** (el driver de Oracle la corta). Usa una ruta relativa como `./Wallet_NOMBRE`.
 
 ## Despliegue en AWS
-El workflow `.github/workflows/deploy-aws.yml` corre los tests, publica la imagen en **Amazon ECR** y la despliega en la **EC2** por Systems Manager en cada push a `main`. El nombre y el puerto del servicio están en `aws/servicio.env`. Paso a paso: `aws/DESPLIEGUE_AWS.md` en la carpeta raíz del proyecto.
+`.github/workflows/deploy-aws.yml` corre los tests, publica la imagen en **Amazon ECR** y la despliega en la **EC2** por Systems Manager en cada push a `main`. Conserva el contenedor anterior hasta que el nuevo responde (rollback) y termina con una prueba desde internet a través de Nginx. El nombre, el puerto y las rutas de prueba están en `aws/servicio.env`.
+
+Paso a paso completo (CloudFormation, Secrets Manager, S3 y GitHub): [MANUAL-DESPLIEGUE.md](https://github.com/brychavez123/frontend_foro/blob/main/MANUAL-DESPLIEGUE.md).
