@@ -85,3 +85,6 @@ docker run -p 8083:8083 --env-file db.properties -e DB_WALLET_PATH=/app/wallet \
   -v ./Wallet_NOMBRE:/app/wallet:ro ms-moderacion
 ```
 > Importante: la ruta del Wallet **no puede tener espacios** (el driver de Oracle la corta). Usa una ruta relativa como `./Wallet_NOMBRE`.
+
+## Despliegue en AWS
+El workflow `.github/workflows/deploy-aws.yml` corre los tests, publica la imagen en **Amazon ECR** y la despliega en la **EC2** por Systems Manager en cada push a `main`. El nombre y el puerto del servicio están en `aws/servicio.env`. Paso a paso: `aws/DESPLIEGUE_AWS.md` en la carpeta raíz del proyecto.
