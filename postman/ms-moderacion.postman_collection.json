@@ -1,0 +1,914 @@
+{
+  "info": {
+    "name": "Bralomeo Foro - ms-moderacion",
+    "description": "Microservicio de moderación (puerto 8083, publicado por Nginx en /api/moderacion). Solo MODERADOR y ADMIN. Patrón Strategy + Factory para las acciones.\n\nSistema de Foros en Línea (DSY2205). Los 3 microservicios Spring Boot corren como contenedores Docker en una EC2 de AWS y Nginx los publica en http://100.27.17.133. Base de datos: Oracle Autonomous DB.\n\nAutenticación HTTP Basic (ya configurada en cada petición):\n- admin@foro.cl / Admin123! (ADMIN)\n- moderador@foro.cl / Modera123! (MODERADOR)\n- sofia@foro.cl / Sofia123! y diego@foro.cl / Diego123! (USUARIO)\n\nSi la EC2 se reinicia, la IP cambia: reemplázala con Ctrl+Shift+F en Postman o en el JSON.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Resumen de moderación",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://100.27.17.133/api/moderacion/resumen",
+          "protocol": "http",
+          "host": [
+            "100",
+            "27",
+            "17",
+            "133"
+          ],
+          "path": [
+            "api",
+            "moderacion",
+            "resumen"
+          ]
+        },
+        "description": "",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "moderador@foro.cl",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Modera123!",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Listar temas",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://100.27.17.133/api/moderacion/temas",
+          "protocol": "http",
+          "host": [
+            "100",
+            "27",
+            "17",
+            "133"
+          ],
+          "path": [
+            "api",
+            "moderacion",
+            "temas"
+          ]
+        },
+        "description": "",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "moderador@foro.cl",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Modera123!",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Listar temas baneados",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://100.27.17.133/api/moderacion/temas?estado=BANEADO",
+          "protocol": "http",
+          "host": [
+            "100",
+            "27",
+            "17",
+            "133"
+          ],
+          "path": [
+            "api",
+            "moderacion",
+            "temas"
+          ],
+          "query": [
+            {
+              "key": "estado",
+              "value": "BANEADO"
+            }
+          ]
+        },
+        "description": "",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "moderador@foro.cl",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Modera123!",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Ver tema",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://100.27.17.133/api/moderacion/temas/2",
+          "protocol": "http",
+          "host": [
+            "100",
+            "27",
+            "17",
+            "133"
+          ],
+          "path": [
+            "api",
+            "moderacion",
+            "temas",
+            "2"
+          ]
+        },
+        "description": "",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "moderador@foro.cl",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Modera123!",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Banear tema",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://100.27.17.133/api/moderacion/temas/2/banear",
+          "protocol": "http",
+          "host": [
+            "100",
+            "27",
+            "17",
+            "133"
+          ],
+          "path": [
+            "api",
+            "moderacion",
+            "temas",
+            "2",
+            "banear"
+          ]
+        },
+        "description": "Estrategia BANEAR: exige motivo y que el tema esté ACTIVO. Registra la acción en el historial.",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "moderador@foro.cl",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Modera123!",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"motivo\": \"Contenido duplicado: ya existe un tema igual\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Banear tema ya baneado (409)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://100.27.17.133/api/moderacion/temas/2/banear",
+          "protocol": "http",
+          "host": [
+            "100",
+            "27",
+            "17",
+            "133"
+          ],
+          "path": [
+            "api",
+            "moderacion",
+            "temas",
+            "2",
+            "banear"
+          ]
+        },
+        "description": "",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "moderador@foro.cl",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Modera123!",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"motivo\": \"Intento banear otra vez\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Desbanear tema",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://100.27.17.133/api/moderacion/temas/2/desbanear",
+          "protocol": "http",
+          "host": [
+            "100",
+            "27",
+            "17",
+            "133"
+          ],
+          "path": [
+            "api",
+            "moderacion",
+            "temas",
+            "2",
+            "desbanear"
+          ]
+        },
+        "description": "",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "moderador@foro.cl",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Modera123!",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"motivo\": \"Revisado: no incumple las normas\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Banear sin motivo (409)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://100.27.17.133/api/moderacion/temas/2/banear",
+          "protocol": "http",
+          "host": [
+            "100",
+            "27",
+            "17",
+            "133"
+          ],
+          "path": [
+            "api",
+            "moderacion",
+            "temas",
+            "2",
+            "banear"
+          ]
+        },
+        "description": "BanearStrategy valida que el motivo sea obligatorio.",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "moderador@foro.cl",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Modera123!",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Listar comentarios",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://100.27.17.133/api/moderacion/comentarios",
+          "protocol": "http",
+          "host": [
+            "100",
+            "27",
+            "17",
+            "133"
+          ],
+          "path": [
+            "api",
+            "moderacion",
+            "comentarios"
+          ]
+        },
+        "description": "",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "moderador@foro.cl",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Modera123!",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Listar comentarios activos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://100.27.17.133/api/moderacion/comentarios?estado=ACTIVO",
+          "protocol": "http",
+          "host": [
+            "100",
+            "27",
+            "17",
+            "133"
+          ],
+          "path": [
+            "api",
+            "moderacion",
+            "comentarios"
+          ],
+          "query": [
+            {
+              "key": "estado",
+              "value": "ACTIVO"
+            }
+          ]
+        },
+        "description": "",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "moderador@foro.cl",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Modera123!",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Ver comentario",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://100.27.17.133/api/moderacion/comentarios/5",
+          "protocol": "http",
+          "host": [
+            "100",
+            "27",
+            "17",
+            "133"
+          ],
+          "path": [
+            "api",
+            "moderacion",
+            "comentarios",
+            "5"
+          ]
+        },
+        "description": "",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "moderador@foro.cl",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Modera123!",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Banear comentario",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://100.27.17.133/api/moderacion/comentarios/4/banear",
+          "protocol": "http",
+          "host": [
+            "100",
+            "27",
+            "17",
+            "133"
+          ],
+          "path": [
+            "api",
+            "moderacion",
+            "comentarios",
+            "4",
+            "banear"
+          ]
+        },
+        "description": "",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "moderador@foro.cl",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Modera123!",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"motivo\": \"Spam: enlace publicitario\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Desbanear comentario",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://100.27.17.133/api/moderacion/comentarios/4/desbanear",
+          "protocol": "http",
+          "host": [
+            "100",
+            "27",
+            "17",
+            "133"
+          ],
+          "path": [
+            "api",
+            "moderacion",
+            "comentarios",
+            "4",
+            "desbanear"
+          ]
+        },
+        "description": "",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "moderador@foro.cl",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Modera123!",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"motivo\": \"Falso positivo\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Historial de acciones",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://100.27.17.133/api/moderacion/historial",
+          "protocol": "http",
+          "host": [
+            "100",
+            "27",
+            "17",
+            "133"
+          ],
+          "path": [
+            "api",
+            "moderacion",
+            "historial"
+          ]
+        },
+        "description": "",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "moderador@foro.cl",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Modera123!",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Historial de un contenido",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://100.27.17.133/api/moderacion/historial?tipo=TEMA&contenidoId=2",
+          "protocol": "http",
+          "host": [
+            "100",
+            "27",
+            "17",
+            "133"
+          ],
+          "path": [
+            "api",
+            "moderacion",
+            "historial"
+          ],
+          "query": [
+            {
+              "key": "tipo",
+              "value": "TEMA"
+            },
+            {
+              "key": "contenidoId",
+              "value": "2"
+            }
+          ]
+        },
+        "description": "",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "moderador@foro.cl",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Modera123!",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Ver acción del historial",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://100.27.17.133/api/moderacion/historial/1",
+          "protocol": "http",
+          "host": [
+            "100",
+            "27",
+            "17",
+            "133"
+          ],
+          "path": [
+            "api",
+            "moderacion",
+            "historial",
+            "1"
+          ]
+        },
+        "description": "",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "moderador@foro.cl",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Modera123!",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Acciones de un moderador",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://100.27.17.133/api/moderacion/historial/moderador/2",
+          "protocol": "http",
+          "host": [
+            "100",
+            "27",
+            "17",
+            "133"
+          ],
+          "path": [
+            "api",
+            "moderacion",
+            "historial",
+            "moderador",
+            "2"
+          ]
+        },
+        "description": "",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "moderador@foro.cl",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Modera123!",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Eliminar acción con MODERADOR (403)",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://100.27.17.133/api/moderacion/historial/1",
+          "protocol": "http",
+          "host": [
+            "100",
+            "27",
+            "17",
+            "133"
+          ],
+          "path": [
+            "api",
+            "moderacion",
+            "historial",
+            "1"
+          ]
+        },
+        "description": "Solo ADMIN puede borrar el historial.",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "moderador@foro.cl",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Modera123!",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Eliminar acción (ADMIN)",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://100.27.17.133/api/moderacion/historial/1",
+          "protocol": "http",
+          "host": [
+            "100",
+            "27",
+            "17",
+            "133"
+          ],
+          "path": [
+            "api",
+            "moderacion",
+            "historial",
+            "1"
+          ]
+        },
+        "description": "",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "admin@foro.cl",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Admin123!",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Acceso con rol USUARIO (403)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://100.27.17.133/api/moderacion/resumen",
+          "protocol": "http",
+          "host": [
+            "100",
+            "27",
+            "17",
+            "133"
+          ],
+          "path": [
+            "api",
+            "moderacion",
+            "resumen"
+          ]
+        },
+        "description": "",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "sofia@foro.cl",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Sofia123!",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
